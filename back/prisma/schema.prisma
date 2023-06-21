@@ -11,8 +11,25 @@ datasource db {
 }
 
 model User {
-  id              Int @id @default(autoincrement())
-  username        String @unique
-  friends         User[] @relation("friends")
-  friendsRelation User[] @relation("friends")
+  id              	Int @id @default(autoincrement())
+  username        	String @unique
+  friends         	User[] @relation("friends")
+  friendsRelation 	User[] @relation("friends")
+  matches			Match[] @relation("userHomeMatch")
+  matches2			Match[] @relation("userForeignMatch")
+  matches3			Match[] @relation("winnerMatch")
+}
+
+model Match {
+  id              	Int     	@id @default(autoincrement())
+  userHome        	User    	@relation("userHomeMatch", fields: [userHomeId], references: [id]) // Renamed the relation name
+  userHomeId      	Int
+  userForeign     	User    	@relation("userForeignMatch", fields: [userForeignId], references: [id]) // Renamed the relation name
+  userForeignId   	Int
+  winner          	User    	@relation("winnerMatch", fields: [winnerId], references: [id]) // Renamed the relation name
+  winnerId        	Int
+  map             	String
+  userHomeScore   	Int
+  userForeignScore	Int
+  timestamp       	DateTime	@default(now())
 }
