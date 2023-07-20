@@ -1,0 +1,45 @@
+body {
+	margin: 0;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	height: 100vh;
+	background-color: #1E1E1E;
+}
+  
+h1 {
+	color: white;
+
+	font-size: 90px;
+	max-width: 450px;
+
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	text-align: center;
+	
+	margin-top: -200px;
+	margin-bottom: 100px;
+}
+  
+.signin-button {
+	width: 400px;
+	height: 100px;
+	margin-left: 30px;
+
+	background-color: #2A4449;
+	color: white;
+
+	font-size: 32px;
+	font-weight: bold;
+
+	border: none;
+	border-radius: 100px;
+	transition: background-color 0.2s ease-in-out;
+}
+  
+button:hover {
+	background-color: #1F393F;
+}  
