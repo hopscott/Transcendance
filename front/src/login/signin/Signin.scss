@@ -1,3 +1,5 @@
+@import "../../variables";
+
 body {
 	margin: 0;
 
@@ -6,11 +8,11 @@ body {
 	align-items: center;
 
 	height: 100vh;
-	background-color: #1E1E1E;
+	background-color: $background-color;
 }
   
 h1 {
-	color: white;
+	color: $basicfont-color;
 
 	font-size: 90px;
 	max-width: 450px;
@@ -29,7 +31,7 @@ h1 {
 	height: 100px;
 	margin-left: 30px;
 
-	background-color: #2A4449;
+	background-color: $button-color;
 	color: white;
 
 	font-size: 32px;
@@ -41,5 +43,5 @@ h1 {
 }
   
 button:hover {
-	background-color: #1F393F;
+	background-color: $button-hover-color;
 }  

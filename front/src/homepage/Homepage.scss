@@ -1,0 +1,41 @@
+@import "../variables";
+
+
+.home-page {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	text-align: center;
+
+	height: 100vh;
+	background-color: $background-color;
+
+	.heading {
+		color: white;
+		
+		font-size: 60px;
+		max-width: 450px;
+
+		margin-top: 40px;
+	}
+
+	.center-menu {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+
+		color: $basicfont-color;
+		font-size: 60px;
+		cursor: pointer;
+		margin-top: 200px;
+		
+		p {
+			margin: 1px;
+		}
+	}
+
+	.bottom-left-menu {
+		
+	}
+}
