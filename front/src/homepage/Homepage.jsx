@@ -49,6 +49,13 @@ export default class HomePage extends React.Component {
 					<p onClick={this.friendsPage()}>FRIENDS</p>
 					<p onClick={this.logout()}>LOGOUT</p>
 				</div>
+
+				<div className="bottom-right-menu">
+					<p onClick={this.profilePage()}>acousini</p>
+					<p onClick={this.friendsPage()}>jpeyron</p>
+					<p onClick={this.logout()}>iguscett</p>
+					<p onClick={this.logout()}>tcarasso</p>
+				</div>
 			</div>
 		)
 	}
