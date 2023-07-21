@@ -11,10 +11,10 @@ body {
 	background-color: $background-color;
 }
   
-h1 {
+.the-real-pong {
 	color: $basicfont-color;
 
-	font-size: 90px;
+	font-size: 45px;
 	max-width: 450px;
 
 	display: flex;
@@ -22,14 +22,18 @@ h1 {
 	flex-direction: column;
 	text-align: center;
 	
-	margin-top: -200px;
-	margin-bottom: 100px;
+	margin-top: -100px;
+	margin-bottom: 50px;
 }
-  
-.signin-button {
+
+.sign-in-button {
 	width: 400px;
 	height: 100px;
 	margin-left: 30px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
 
 	background-color: $button-color;
 	color: white;
@@ -39,9 +43,12 @@ h1 {
 
 	border: none;
 	border-radius: 100px;
+
+	cursor: pointer;
+
 	transition: background-color 0.2s ease-in-out;
+
+	&:hover {
+		background-color: $button-hover-color;
+	}  
 }
-  
-button:hover {
-	background-color: $button-hover-color;
-}  

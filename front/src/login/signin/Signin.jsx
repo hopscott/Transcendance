@@ -1,5 +1,8 @@
 import React from "react"
 
+import Title from "../../components/Title.jsx"
+import Button from "../../components/Button"
+
 import "./Signin.scss"
 
 export default class Signin extends React.Component {
@@ -11,8 +14,8 @@ export default class Signin extends React.Component {
 	render() {
 		return (
 			<div>
-				<h1>THE REAL PONG</h1>
-				<button className="signin-button" onClick={this.signIn}>SIGN IN</button>
+				<Title name="THE REAL PONG"/>
+				<Button name="SIGN IN" clickAction={this.signIn}/>
 			</div>
 		)
 	}
