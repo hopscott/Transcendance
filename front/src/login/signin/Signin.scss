@@ -1,54 +1,53 @@
 @import "../../variables";
 
-body {
-	margin: 0;
-
+.signin-page {
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 
 	height: 100vh;
+	width: 100vw;
+
 	background-color: $background-color;
-}
-  
-.the-real-pong {
-	color: $basicfont-color;
 
-	font-size: 45px;
-	max-width: 450px;
-
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	text-align: center;
+	.signin-title {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		text-align: center;
+		
+		color: $basicfont-color;
 	
-	margin-top: -100px;
-	margin-bottom: 50px;
-}
+		font-size: 45px;
+		max-width: 450px;
+		
+		margin-top: -100px;
+	}
 
-.sign-in-button {
-	width: 400px;
-	height: 100px;
-	margin-left: 30px;
+	.signin-button {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
 
-	display: flex;
-	justify-content: center;
-	align-items: center;
+		width: 400px;
+		height: 100px;
 
-	background-color: $button-color;
-	color: white;
+		font-size: 32px;
+		font-weight: bold;
 
-	font-size: 32px;
-	font-weight: bold;
+		background-color: $button-color;
+		color: white;
 
-	border: none;
-	border-radius: 100px;
+		cursor: pointer;
 
-	cursor: pointer;
+		border-radius: 100px;
 
-	transition: background-color 0.2s ease-in-out;
+		transition: background-color 0.2s ease-in-out;
 
-	&:hover {
-		background-color: $button-hover-color;
-	}  
+		&:hover {
+			background-color: $button-hover-color;
+		}  
+	}
 }
