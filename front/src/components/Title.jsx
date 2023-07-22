@@ -1,8 +1,8 @@
 import React from "react";
 
-const Title = ({name}) => {
+const Title = ({name, className}) => {
 	return (
-		<div className={name.toLowerCase().replace(/ /g,"-")}>
+		<div className={className}>
 			<h1>{name}</h1>
 		</div>
 	)

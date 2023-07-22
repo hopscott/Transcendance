@@ -1,8 +1,8 @@
 import React from "react";
 
-export default function button({name, clickAction}) {
+export default function button({name, className, clickAction}) {
   return (
-    <div className={name.toLowerCase().replace(/ /g,"-") + "-button"}
+    <div className={className}
         onClick={clickAction}>
       {name}
     </div>

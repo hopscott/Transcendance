@@ -8,38 +8,108 @@
 	align-items: center;
 	text-align: center;
 
-	height: 100vh;
 	background-color: $background-color;
 
-	.heading {
-		color: white;
-		
-		font-size: 60px;
-		max-width: 450px;
-
-		margin-top: 40px;
-	}
-
-	.center-menu {
+	.header {
 		display: flex;
-		flex-direction: column;
-		align-items: center;
+		justify-content: center;
 
-		color: $basicfont-color;
-		font-size: 60px;
-		cursor: pointer;
-		margin-top: 200px;
+		height: 20vh;
+		width: 100vw;
 		
-		p {
-			margin: 1px;
+		.homepage-title {
+			max-width: 300px;
+			margin-top: -40px;
+
+			color: $basicfont-color;
+	
+			font-size: 30px;
 		}
 	}
 
-	.bottom-left-menu {
+	.main {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+			
+		height: 60vh;
+		width: 100vw;
+			
+		.center-menu {
+			display: flex;
+			flex-direction: column;
 
+			color: $basicfont-color;
+			font-size: 60px;
+	
+			cursor: pointer;
+	
+			div {
+				transition: font-size 0.2s ease-in-out;
+	
+				&:hover {
+					font-size: 80px;	
+				}
+			}
+		}
 	}
 
-	.bottom-right-menu {
+	.footer {
+		height: 20vh;
+		width: 100vw;
 		
+		display: flex;
+
+		.settings {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end;
+			align-items: flex-start;
+
+			width: 50%;
+			text-align: left;
+
+			margin-left: 20px;
+			margin-bottom: 20px;
+
+			color: $basicfont-color;
+			font-size: 30px;
+
+			cursor: pointer;
+
+			.button {
+				transition: font-size 0.2s ease-in-out;
+	
+				&:hover {
+					font-size: 50px;	
+				}
+			}
+		}
+
+		.logins {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-end;
+			align-items: flex-end;
+
+			width: 50%;
+			text-align: right;
+
+			margin-right: 20px;
+			margin-bottom: 20px;
+			color: $basicfont-color;
+			font-size: 30px;
+
+			cursor: pointer;
+
+			.button {
+				transition: font-size 0.2s ease-in-out;
+	
+				&:hover {
+					font-size: 40px;	
+				}
+			}
+		}
 	}
+
 }

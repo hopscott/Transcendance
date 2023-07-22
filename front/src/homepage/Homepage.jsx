@@ -1,5 +1,8 @@
 import React from "react"
 
+import Title from "../components/Title.jsx"
+import Button from "../components/Button"
+
 import "./Homepage.scss"
 
 export default class HomePage extends React.Component {
@@ -35,26 +38,41 @@ export default class HomePage extends React.Component {
 	render() {
 		return (
 			<div className="home-page">
-				<h1 className="heading">THE REAL PONG</h1>
-	  
-				<div className="center-menu">
-					<p onClick={this.queueMatchmaking()}>PLAY</p>
-					<p onClick={this.displayLeaderboard()}>LEADERBOARD</p>
-					<p onClick={this.openChat()}>CHAT</p>
-					<p onClick={this.displayHistory()}>HISTORY</p>
+				
+				<div className="header">
+					<Title name="THE REAL PONG" className="homepage-title"/>
 				</div>
 
-				<div className="bottom-left-menu">
-					<p onClick={this.profilePage()}>PROFILE</p>
-					<p onClick={this.friendsPage()}>FRIENDS</p>
-					<p onClick={this.logout()}>LOGOUT</p>
-				</div>
+				<div className="main">
 
-				<div className="bottom-right-menu">
-					<p onClick={this.profilePage()}>acousini</p>
-					<p onClick={this.friendsPage()}>jpeyron</p>
-					<p onClick={this.logout()}>iguscett</p>
-					<p onClick={this.logout()}>tcarasso</p>
+					<div className="center-menu">
+						<Button name="PLAY" className="play-button"
+							clickAction={this.queueMatchmaking}/>
+
+						<Button name="LEADERBOARD" className="leaderboard-button"
+							clickAction={this.displayLeaderboard}/>
+
+						<Button name="CHAT" className="chat-button"
+							clickAction={this.openChat}/>
+
+						<Button name="HISTORY" className="history-button"
+							clickAction={this.displayHistory}/>
+					</div>
+
+				</div>
+				
+				<div className="footer">
+					<div className="settings">
+						<Button name="PROFILE" className="button"/>
+						<Button name="FRIENDS" className="button"/>
+						<Button name="LOGOUT" className="button"/>
+					</div>
+					<div className="logins">
+						<Button name="acousini" className="button"/>
+						<Button name="jpeyron" className="button"/>
+						<Button name="iguscett" className="button"/>
+						<Button name="tcarasso" className="button"/>
+					</div>
 				</div>
 			</div>
 		)
