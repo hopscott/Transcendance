@@ -52,6 +52,14 @@
 				}
 			}
 		}
+
+		.pong-paddle-left {
+			background-color: white;
+		}
+
+		.pong-paddle-right {
+			background-color: white;
+		}
 	}
 
 	.footer {
@@ -59,6 +67,8 @@
 		width: 100vw;
 		
 		display: flex;
+		
+		z-index: 1; // Allows to set the display priority of a div
 
 		.settings {
 			display: flex;
@@ -97,7 +107,7 @@
 
 			margin-right: 20px;
 			margin-bottom: 20px;
-			color: $basicfont-color;
+			color: red;
 			font-size: 30px;
 
 			cursor: pointer;
