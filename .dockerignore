@@ -4,3 +4,7 @@
 npm-debug.log
 bdd.env
 **/.env
+
+node_modules
+**/npm-debug.log
+**/build

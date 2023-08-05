@@ -62,6 +62,8 @@ export class UserService {
       originalname: file.originalname,
       filename: file.filename,
     };
+    // protect from long name?
+    
     const oldPictureObj = user.profilePicture;
 
     // Compress and store file and delete uncompressed

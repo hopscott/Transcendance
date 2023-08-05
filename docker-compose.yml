@@ -7,7 +7,7 @@ services:
     env_file:
     - ./front/.env
     volumes:
-      - ./front:/workspace/front
+      - front:/workspace/front
     networks:
       - app
     depends_on:
@@ -23,7 +23,7 @@ services:
     ports:
       - 5555:5555
     volumes:
-      - ./back:/workspace/back
+      - back:/workspace/back
     networks:
       - app
     depends_on:
@@ -42,7 +42,7 @@ services:
       - app
     restart: always
     logging:
-      driver: "none"
+      driver: "json-file"
 
   bdd:
     image: postgres:latest
@@ -57,6 +57,8 @@ services:
     restart: always
 
 volumes:
+  back:
+  front:
   data:
 
 networks:

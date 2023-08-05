@@ -1,5 +1,5 @@
 import React, { ReactNode} from "react";
-import ParticlesBackgroundNew from "./components/ParticlesSlow.memo";
+import ParticlesBackgroundNew from "./Components/ParticlesSlow.memo";
 
 interface AppWrapperProps {
     children: ReactNode;

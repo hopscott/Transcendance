@@ -21,12 +21,6 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  app.enableCors({
-    origin: [ 'http://localhost:8000'],
-    allowedHeaders: 'Content-Type, Accept, Authorization',
-    methods: 'GET, PATCH, POST, PUT, DELETE, OPTIONS',
-    credentials: true,
-  });
 
   app.use(cookieParser());
 
