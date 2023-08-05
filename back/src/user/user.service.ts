@@ -22,7 +22,7 @@ const MAX_FILE_SIZE = 1000 * 1000 * 10; // 1 MB (you can adjust this value as ne
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService, private config: ConfigService) { }
+  constructor(private prisma: PrismaService, private config: ConfigService) {}
 
   async editUser(userId: number, dto: EditUserDto) {
     if (dto.username && dto.username.length > 100)
@@ -104,14 +104,14 @@ export class UserService {
 
     // Delete the previous profile picture from the file system
     try {
-      const pathToDelete = "/workspace/back/public" + oldPictureObj.replace("/api", "");
+      const pathToDelete =
+        '/workspace/back/public' + oldPictureObj.replace('/api', '');
       if (
-        pathToDelete &&
-        oldPictureObj !==
-        process.env.IMAGES_FOLDER + process.env.DEFAULT_PROFILE_PICTURE
-      )
+        pathToDelete !== '/workspace/back/public/images/logo.png'
+      ) {
         fs.unlinkSync(pathToDelete);
-    } catch (err: any) { }
+      }
+    } catch (err: any) {}
   }
 
   async createUser(data: Prisma.UserCreateInput): Promise<User> {
@@ -185,8 +185,8 @@ export class UserService {
         select: {
           friends: {
             where: { id: friendId },
-            select: { id: true }
-          }
+            select: { id: true },
+          },
         },
       });
       // console.log("user:", user);
@@ -207,9 +207,4 @@ export class UserService {
       // console.error('Error adding friend:', error);
     }
   }
-
-
-
-
-
 }
