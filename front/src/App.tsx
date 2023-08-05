@@ -1,25 +1,27 @@
-import React, { } from 'react';
+import React, { Component, useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css"
 import './App.css';
-import './Screens/UserProfile/css/ProgressBar.scss'
-import './Screens/Login/css/LoginButtons.css'
-import './Screens/Login/css/Signin.scss'
-import './Components/css/Toast.scss'
-import './Components/css/ToastNotif.scss'
-import './Screens/UserProfile/css/UserProfile.scss'
-import './Screens/LeaderBoard/css/LeaderBoard.scss'
-import { Home } from './Screens/Home/Home';
-import { Signin } from './Screens/Login/Signin';
-import { Signup } from './Screens/Login/Signup';
-import { Route, Routes } from 'react-router-dom';
+import './css/ProgressBar.scss'
+import './css/LoginButtons.css'
+import './css/Signin.scss'
+import './css/Toast.scss'
+import './css/ToastNotif.scss'
+import './css/UserProfile.scss'
+import './LeaderBoard/LeaderBoard'
+import { Home } from './screens/Home';
+import { Signin } from './screens/Signin';
+import { Signup } from './screens/Signup';
+import { Play } from './screens/Play';
+import { Route, Routes, NavLink } from 'react-router-dom';
 import AppWrapper from './AppWrapper';
-import { UserProfile } from './Screens/UserProfile/UserProfile';
-import { UserProfileEdit } from './Screens/UserProfile/UserProfileEdit';
-import { APP_ROUTES } from './Utils/constants';
-import { Test } from './Screens/Test';
-import LeaderBoard from './Screens/LeaderBoard/LeaderBoard';
-import GenericUserProfile from './Screens/UserProfile/GenericUserProfile';
-import UserFriends from './Screens/UserProfile/UserFriends';
+import { UserProfile } from './screens/UserProfile';
+import { UserProfileEdit } from './screens/UserProfileEdit';
+import { APP_ROUTES } from './utils/constants';
+import { Test } from './screens/Test';
+import LeaderBoard from './LeaderBoard/LeaderBoard';
+import GenericUserProfile from './UserProfile/GenericUserProfile';
+import { render } from '@testing-library/react';
+import UserFriends from './UserProfile/UserFriends';
 
 function App() {
 
