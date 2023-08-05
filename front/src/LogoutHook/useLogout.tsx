@@ -1,8 +1,10 @@
 import { APP_ROUTES, API_ROUTES } from "../Utils";
 import axios from "axios";
+import { disconnectSocket } from "../Websocket/Socket.io";
 
 const handleLogout = async (setErrMsg: (error: string) => void) => {
   try {
+    disconnectSocket();
     const response = await axios.post(API_ROUTES.LOG_OUT, null, {
       withCredentials: true,
     });

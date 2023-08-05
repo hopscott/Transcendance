@@ -13,6 +13,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static'; // Add this import.
 import { SocketEvents } from './websocket/websocket.gateway';
+import { SocketService } from './websocket/websocket.service';
 // import { WebsocketGateway } from './websocket/websocket.gateway';
 
 @Module({
@@ -35,6 +36,6 @@ import { SocketEvents } from './websocket/websocket.gateway';
     PrismaModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, AuthService, SocketEvents],
+  providers: [AppService, AuthService, SocketEvents, SocketService],
 })
 export class AppModule {}

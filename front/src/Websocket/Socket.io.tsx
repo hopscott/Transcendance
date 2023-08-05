@@ -1,18 +1,23 @@
 import { io, Socket } from 'socket.io-client';
 import { API_URL } from '../Utils';
 
-const SERVER_URL = API_URL;
+const socketUrl = '/socket/general';
 
 let socket: Socket | null = null;
 
-export const initSocket = (userId: string) => {
-  socket = io("/socket", { query: { userId } });
-};
+// export const initSocket = (userId: string) => {
+//   socket = io("/socket", { query: { userId } });
+// };
 
-export const connectSocket = () => {
-  if (!socket) {
-    socket = io("/socket");
-  }
+export const connectSocket = (userId: string) => {
+  // if (!socket) {
+    socket = io(socketUrl, {
+      query: { userId },
+      reconnection: true,
+      reconnectionAttempts: 5,
+    });
+    
+  // }
 };
 
 export const getSocket = () => {

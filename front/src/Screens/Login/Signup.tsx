@@ -4,7 +4,7 @@ import axios from "axios";
 import { API_ROUTES, APP_ROUTES } from "../../Utils";
 import { GlowTextSignin } from "../../Utils";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
-import { connectSocket, initSocket } from "../../Websocket/Socket.io.";
+import { connectSocket } from "../../Websocket/Socket.io";
 
 export const Signup = () => {
   const history = useNavigate();
@@ -37,13 +37,11 @@ export const Signup = () => {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
         });
-      // connectSocket(response.data.id);
-      // console.log(response.data);
       setEmail('');
       setPassword('');
       setSuccess(true);
-      connectSocket();
-      // initSocket(response.data.id);
+      console.log("id:", response.data.id);
+      connectSocket(response.data.id);
     } catch (err: any) {
 
       console.log(err.response.data.message);
