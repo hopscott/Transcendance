@@ -4,7 +4,7 @@ import axios from "axios";
 import { API_ROUTES, APP_ROUTES } from "../../Utils";
 import { GlowTextSignin } from "../../Utils";
 import ToastErrorMessage from "../../Components/ToastErrorMessage";
-import { initSocket } from "../../Websocket/Socket.io.";
+import { connectSocket, initSocket } from "../../Websocket/Socket.io.";
 
 export const Signup = () => {
   const history = useNavigate();
@@ -24,32 +24,25 @@ export const Signup = () => {
     }
   }, [success, history]);
 
-
-  useEffect(() => {
-    console.log("ok");
-  }, []);
-
   const resetErrMsg = () => {
     setErrMsg(''); // Reset errMsg to an empty string
   };
 
   const handleSubmit = async (e: FormEvent) => {
-
     e.preventDefault();
-
     try {
-      console.log(`Route: ${API_ROUTES.SIGN_UP}`)
       const response = await axios.post(API_ROUTES.SIGN_UP,
         JSON.stringify({ email: email, username: username, password: password }),
         {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
-        })
-      console.log(response.data);
-      console.log(response.data.id);
+        });
+      // connectSocket(response.data.id);
+      // console.log(response.data);
       setEmail('');
       setPassword('');
       setSuccess(true);
+      connectSocket();
       // initSocket(response.data.id);
     } catch (err: any) {
 

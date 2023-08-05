@@ -5,14 +5,14 @@ import * as cookieParser from 'cookie-parser';
 import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
 import { join } from 'path';
+import { WebSocketAdapter } from '@nestjs/common';
+import { IoAdapter } from '@nestjs/platform-socket.io';
+
 
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
-  // Serve static files from the public/images directory
-  // app.use('/images', express.static(join(__dirname, '..', 'public')));
-
+  app.useWebSocketAdapter(new IoAdapter(app));
   // Set the public directory to serve static files.
   app.useStaticAssets(join(__dirname, '..', 'public'));
 
@@ -21,12 +21,12 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  app.enableCors({
-    origin: [ 'http://localhost:8000'],
-    allowedHeaders: 'Content-Type, Accept, Authorization',
-    methods: 'GET, PATCH, POST, PUT, DELETE, OPTIONS',
-    credentials: true,
-  });
+  // app.enableCors({
+  //   origin: [ 'http://localhost:8000'],
+  //   allowedHeaders: 'Content-Type, Accept, Authorization',
+  //   methods: 'GET, PATCH, POST, PUT, DELETE, OPTIONS',
+  //   credentials: true,
+  // });
 
   app.use(cookieParser());
 

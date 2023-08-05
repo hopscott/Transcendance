@@ -56,7 +56,6 @@ const GenericUserProfile = () => {
     const dataToSend: any = {};
     if (id)
       dataToSend.id = id;
-
     try {
       const response = await axios.patch(
         API_ROUTES.ADD_FRIEND + id,

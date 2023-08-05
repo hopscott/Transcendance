@@ -1,10 +1,4 @@
-import {
-  ForbiddenException,
-  HttpStatus,
-  Injectable,
-  Req,
-} from '@nestjs/common';
-import { Request } from 'express';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
@@ -14,7 +8,6 @@ import { ConfigService } from '@nestjs/config';
 import { PayloadDto } from './dto/payload.dto';
 import { AuthDtoUp } from './dto/authup.dto';
 import { Response } from 'express';
-
 
 @Injectable()
 export class AuthService {
@@ -32,8 +25,6 @@ export class AuthService {
   }
 
   async signup(dto: AuthDtoUp, res: Response) {
-    const profilePictureUrl = '/images/logo.png';
-    const absoluteUrl = process.env.API_BASE_URL + `${profilePictureUrl}`;
     const hash = await argon.hash(dto.password);
     if (dto.username.length > 100)
       throw new ForbiddenException('Username too long');
@@ -45,19 +36,13 @@ export class AuthService {
           email: dto.email,
           username: dto.username,
           hash,
-          profilePicture: absoluteUrl,
-          friends: { // Provide friends as an empty array of nested objects
+          profilePicture: process.env.API_BASE_URL + '/images/logo.png',
+          friends: {
             create: [],
           },
         },
       });
-      const access_token = this.signToken(user.id, user.email);
-    //   res.cookie('access_token', access_token, {
-    //     httpOnly: true,
-    //     maxAge: 60 * 60 * 24 * 10000,
-    //     sameSite: 'lax',
-    // });
-      return access_token;
+      return user;
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
@@ -70,7 +55,6 @@ export class AuthService {
   }
 
   async signin(dto: AuthDto) {
-
     const user = await this.prisma.user.findUnique({
       where: {
         email: dto.email,

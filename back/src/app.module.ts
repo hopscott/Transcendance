@@ -12,7 +12,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { PrismaModule } from './prisma/prisma.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static'; // Add this import.
-import { WebsocketGateway } from './websocket/websocket.gateway';
+import { SocketEvents } from './websocket/websocket.gateway';
+// import { WebsocketGateway } from './websocket/websocket.gateway';
 
 @Module({
   imports: [
@@ -34,6 +35,6 @@ import { WebsocketGateway } from './websocket/websocket.gateway';
     PrismaModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, AuthService, WebsocketGateway,],
+  providers: [AppService, AuthService, SocketEvents],
 })
 export class AppModule {}
