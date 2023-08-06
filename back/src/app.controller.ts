@@ -2,11 +2,11 @@ import { Controller, Get, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthDto } from './auth/dto';
 
-@Controller()
+@Controller('/main')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('hello')
+  @Get('test')
   getHello(): string {
     return this.appService.getHello();
   }

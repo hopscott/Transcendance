@@ -8,6 +8,8 @@ import { ConfigService } from '@nestjs/config';
 import { PayloadDto } from './dto/payload.dto';
 import { AuthDtoUp } from './dto/authup.dto';
 import { Response } from 'express';
+import * as jwt from 'jsonwebtoken';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -78,5 +80,22 @@ export class AuthService {
       secret: secret,
     });
     return token;
+  }
+
+  async validateJwtToken(token: string): Promise<User | null> {
+    try {
+      const jwtSecret = this.config.get('JWT_SECRET');
+      const decodedToken: any = jwt.verify(token, jwtSecret);
+      const {id} = decodedToken;
+      // console.log('id:', id, ' and email:', email);
+      const user = this.prisma.user.findUnique({
+        where: {
+          id,
+        }
+      });
+      return user;
+    } catch (err) {
+      return null;
+    }
   }
 }

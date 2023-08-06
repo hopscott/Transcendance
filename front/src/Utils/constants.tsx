@@ -16,6 +16,10 @@ export const API_ROUTES = {
 
 export const APP_URL = 'http://localhost:8000'
 
+export const SOCKET_GENERAL = '/general'
+export const SOCKET_GAME = '/game'
+export const SOCKET_CHAT = '/chat'
+
 export const APP_ROUTES = {
     HOME:                 '/',
     SIGN_IN:              '/login',

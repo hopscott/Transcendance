@@ -1,44 +1,61 @@
 import {
-  // ConnectedSocket,
-  // MessageBody,
-  // SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
+  SubscribeMessage,
+  OnGatewayInit
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-// import { GetUser } from 'src/auth/decorator';
 import { SocketService } from './websocket.service';
-// import socket from '../../../front/src/Websocket/Socket.io.';
+import { extractAccessTokenFromCookie } from 'src/utils';
+import { AuthService } from 'src/auth/auth.service';
 
 @WebSocketGateway({ namespace: 'general'})
 export class SocketEvents {
   @WebSocketServer()
   server: Server;
 
-  constructor(private socketService: SocketService) {}
+  constructor(private socketService: SocketService, private authService: AuthService) {}
 
-  private connectedUsers: Set<string> = new Set();
+  afterInit(): void {
+    console.log("Websocket Gateway initialized");
+  }
 
-  handleConnection(client: any) {
-    // Handle user connection
-    console.log('ok1');
-    const socketId = client.handshake.client.id;
-    this.connectedUsers.add(socketId);
-    this.sendUserStatus(socketId, true);
-    // socketId.emit('hello', 'world');
+  private connectedUsers: Map<number, Socket> = new Map();
+
+  async handleConnection(client: Socket) {
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!access_token) {
+      client.disconnect();
+      return;
+    }
+    const user = await this.authService.validateJwtToken(access_token);
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+    client.data = { id: user.id, email: user.email };
+    client.join(`user_${user.id}`);
+    this.server.emit(`user_status_update`, 'You are connected');
+
+    this.connectedUsers.set(user.id, client);
+
+    // await this.notifyFriendsOnline(user.id, true);
+
+
   }
 
   handleDisconnect(client: any) {
-    // Handle user disconnection
-    console.log('ok2');
-    const socketId = client.handshake.client.id;
+    console.log('3 Connection out');
+    const socketId = client.handshake.query.userId;
     this.connectedUsers.delete(socketId);
-    this.sendUserStatus(socketId, false);
+
+    
   }
 
-  private sendUserStatus(userId: string, status: boolean) {
-    console.log('ok3');
-    // Emit event to update user status in frontend
-    this.server.to(userId).emit('userStatus', status);
+  @SubscribeMessage('message') // This decorator listens for messages with the event name 'message'
+  handleMessage(client: any, payload: any) {
+    console.log('Users connected:', this.connectedUsers);
+    console.log('Received message:', payload);
+    this.server.emit('test', 'Message received by server');
   }
 }

@@ -14,6 +14,7 @@ import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static'; // Add this import.
 import { SocketEvents } from './websocket/websocket.gateway';
 import { SocketService } from './websocket/websocket.service';
+import { SocketModule } from './websocket/websocket.module';
 // import { WebsocketGateway } from './websocket/websocket.gateway';
 
 @Module({
@@ -34,6 +35,7 @@ import { SocketService } from './websocket/websocket.service';
     UserModule,
     BookmarkModule,
     PrismaModule,
+    SocketModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService, SocketEvents, SocketService],

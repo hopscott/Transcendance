@@ -1,23 +1,38 @@
 import { io, Socket } from 'socket.io-client';
-import { API_URL } from '../Utils';
+import { APP_URL, SOCKET_GENERAL } from '../Utils';
 
-const socketUrl = '/socket/general';
+// const socketUrl = '/api/general';
+// const socketUrl = 'http://localhost:8000/';
+const socketUrl = APP_URL + SOCKET_GENERAL;
 
 let socket: Socket | null = null;
 
-// export const initSocket = (userId: string) => {
-//   socket = io("/socket", { query: { userId } });
-// };
-
 export const connectSocket = (userId: string) => {
-  // if (!socket) {
+
+  if (!socket) {
+    console.log('Connecting socket for user:', userId);
     socket = io(socketUrl, {
       query: { userId },
       reconnection: true,
       reconnectionAttempts: 5,
     });
-    
-  // }
+
+    socket.on("connect", () => {
+      if (socket)
+        console.log(socket.id);
+    });
+    // Listen on test
+    socket.on('user_status_update', (data) => {
+      console.log("Status update:", data);
+    })
+    return socket;
+  }
+};
+
+export const sendMessage = (message: string) => {
+  if (socket) {
+    socket.emit('message', message);
+  }
 };
 
 export const getSocket = () => {
