@@ -38,7 +38,7 @@ export class SocketEvents {
     this.server.emit(`user_status_update`, 'You are connected');
 
     this.connectedUsers.set(user.id, client);
-
+    this.server.to(`user_${user.id}`).emit('userStatus', { userId: user.id, status: true });
     // await this.notifyFriendsOnline(user.id, true);
 
 

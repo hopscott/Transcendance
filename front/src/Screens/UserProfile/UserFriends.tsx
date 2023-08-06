@@ -11,10 +11,12 @@ import { UserArray } from "../../Services/UserArray";
 import LogoutParent from "../../LogoutHook/logoutParent";
 import { FaHeart } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
-import { connectSocket } from "../../Websocket/Socket.io";
+import { connectSocket, getSocket, disconnectSocket } from "../../Websocket/Socket.io";
+import { JsxEmit } from "typescript";
 
 const UserFriends = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [userDataMain, setUserDataMain] = useState<UserData | null>(null);
   const [errMsg, setErrMsg] = useState('');
   const [users, setUsers] = useState<UserArray>([]);
   const [removeFlag, setRemoveFlag] = useState(false);
@@ -47,7 +49,9 @@ const UserFriends = () => {
         {
           withCredentials: true
         });
-      console.log("ici:", response.data.friends);
+      console.log("ici:", response.data);
+      localStorage.setItem('userData', JSON.stringify(response.data));
+      setUserData(userData);
       localStorage.setItem('userFriends', JSON.stringify(response.data.friends));
       let updatedUsers: User[] = [];
       response.data.friends.forEach((userDatat: any) => {
@@ -65,8 +69,25 @@ const UserFriends = () => {
 
   useEffect(() => {
     fetchFriends();
-    // connectSocket();
   }, []);
+
+  useEffect(() => {
+    const userString = localStorage.getItem('userData');
+    if (userString) {
+      const userJSON = JSON.parse(userString);
+      if (userJSON && userJSON.id) {
+        connectSocket(userJSON.id, setFriendOnlineStatus);
+      }
+    }
+    return () => {
+      disconnectSocket();
+    };
+
+  }, [userData, fetchFriends]);
+
+
+
+
 
   useEffect(() => {
     const removeUser = async (id: string | undefined) => {
@@ -88,6 +109,9 @@ const UserFriends = () => {
       fetchFriends();
       setIdToRemove('none');
     };
+
+
+
 
     if (removeFlag) {
       // Call the removeUser function with the appropriate ID here
@@ -142,8 +166,6 @@ const UserFriends = () => {
 
           <main className="leaderboard__profiles">
             {users.map((user) => (
-
-
               <article className="leaderboard__profile" key={user.getId()}>
                 <img
                   src={user.getProfilePicture()}
@@ -152,12 +174,14 @@ const UserFriends = () => {
                 />
                 <Link className="leaderboard__name" title="Show user profile"
                   style={{ textDecoration: 'none' }}
-                  to={userData?.id == user.getId() ? APP_ROUTES.USER_PROFILE : APP_ROUTES.GENERIC_USER_PROFILE + user.getId()}
+                  to={userData?.id === user.getId() ? APP_ROUTES.USER_PROFILE : APP_ROUTES.GENERIC_USER_PROFILE + user.getId()}
                   key={user.getId()}>
                   <span className="leaderboard__name">
                     {user.getUsername()}
+                    {friendOnlineStatus[user.getId()] ? <span>Online</span> : <span>Offline</span>}
                   </span>
                 </Link>
+
                 <span className="leaderboard__value">
                   <button onClick={() => removeFriend(user.getId())}>
                     <IconContext.Provider
@@ -166,13 +190,14 @@ const UserFriends = () => {
                     </IconContext.Provider>
                   </button>
                 </span>
+
               </article>
             ))}
           </main>
 
         </MDBCard>
       </MDBContainer>
-      <ToastNotificationMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove}/>
+      <ToastNotificationMessage notifMsg={notifMsg} resetNotifMsg={resetNotifMsg} changeRemoveFlag={truRemoveFlag} resetIdToRemove={resetIdToRemove} />
       <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />
     </div>
   );

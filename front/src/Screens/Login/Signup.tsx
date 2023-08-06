@@ -41,7 +41,7 @@ export const Signup = () => {
       setPassword('');
       setSuccess(true);
       console.log("id:", response.data.id);
-      connectSocket(response.data.id);
+      // connectSocket(response.data.id);
     } catch (err: any) {
 
       console.log(err.response.data.message);

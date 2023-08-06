@@ -39,7 +39,7 @@ export const Home = () => {
   };
 
   const handleSocketConnect = () => {
-    connectSocket("1");
+    // connectSocket("1");
   };
 
   // const handleVideoEnd = () => {

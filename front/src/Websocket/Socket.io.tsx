@@ -7,8 +7,11 @@ const socketUrl = APP_URL + SOCKET_GENERAL;
 
 let socket: Socket | null = null;
 
-export const connectSocket = (userId: string) => {
+export const connectSocket = (userId: string | null, setFriendOnlineStatus: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>) => {
 
+  console.log("inside socket and sock value:", socket);
+  if (!userId)
+    return;
   if (!socket) {
     console.log('Connecting socket for user:', userId);
     socket = io(socketUrl, {
@@ -25,6 +28,10 @@ export const connectSocket = (userId: string) => {
     socket.on('user_status_update', (data) => {
       console.log("Status update:", data);
     })
+
+    socket.on('userStatus', ({ userId, status }: { userId: string; status: boolean }) => {
+      setFriendOnlineStatus((prevStatus) => ({ ...prevStatus, [userId]: status }));
+    });
     return socket;
   }
 };
@@ -37,8 +44,12 @@ export const sendMessage = (message: string) => {
 
 export const getSocket = () => {
   if (!socket) {
-    throw new Error('Socket has not been initialized.');
+    console.log("NOOOOOOOOOOOOOO SOCKET");
+    return;
+    // throw new Error('Socket has not been initialized.');
   }
+  console.log("____SOCKET OK____")
+
   return socket;
 };
 
