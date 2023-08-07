@@ -24,12 +24,15 @@ import { editFileName } from './module';
 import { Response } from 'express';
 import { CustomExceptionFilter } from './module/CustomExceptionFilter';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SocketService } from 'src/websocket/websocket.service';
 
 @UseGuards(JwtGuard)
 @Controller('users')
 export class UserController {
-  constructor(private userService: UserService,
-    private prisma: PrismaService) { }
+  constructor(
+    private userService: UserService,
+    private prisma: PrismaService,
+    private socketService: SocketService) { }
 
   @Get('me')
   getMe(@GetUser() user: User) {
@@ -43,7 +46,7 @@ export class UserController {
       where: { id: user.id },
       include: { friends: true },
     });
-    // console.log(userFriends);
+    // console.log('me friends nb connected:', this.socketService.getConnectedUsers().size);
     // if (!user) {
     //   return res.status(404).json({ message: 'User not found' });
     // }

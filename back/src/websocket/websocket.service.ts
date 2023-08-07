@@ -3,28 +3,38 @@ import { Server, Socket } from 'socket.io';
 
 @Injectable()
 export class SocketService {
-  private connectedSockets: Map<string, Socket> = new Map();
+  // private connectedUsers: Map<string, Socket> = new Map();
+  // private connectedUsers: Map<number, Socket> = new Map();
 
-  addSocket(socketId: string, socket: Socket) {
-    this.connectedSockets.set(socketId, socket);
-  }
 
-  removeSocket(socketId: string) {
-    this.connectedSockets.delete(socketId);
-  }
+  // getConnectedUsers(): Map<number, Socket> {
+  //   return this.connectedUsers;
+  // }
 
-  getSocket(socketId: string): Socket | undefined {
-    return this.connectedSockets.get(socketId);
-  }
+  // getNbConnectedUsers(): Map<number, Socket> {
+  //   return this.connectedUsers;
+  // }
 
-  getAllSockets(): Socket[] {
-    return Array.from(this.connectedSockets.values());
-  }
+  // addUser(userId: number, socket: Socket): void {
+  //   this.connectedUsers.set(userId, socket);
+  // }
 
-  closeAllSockets() {
-    for (const socket of this.connectedSockets.values()) {
-      socket.disconnect();
-    }
-    this.connectedSockets.clear();
-  }
+  // removeUser(userId: number): void {
+  //   this.connectedUsers.delete(userId);
+  // }
+
+  // getSocket(userId: number): Socket | undefined {
+  //   return this.connectedUsers.get(userId);
+  // }
+
+  // getAllSockets(): Socket[] {
+  //   return Array.from(this.connectedUsers.values());
+  // }
+
+  // closeAllSockets() {
+  //   for (const socket of this.connectedUsers.values()) {
+  //     socket.disconnect();
+  //   }
+  //   this.connectedUsers.clear();
+  // }
 }

@@ -38,6 +38,6 @@ import { SocketModule } from './websocket/websocket.module';
     SocketModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, AuthService, SocketEvents, SocketService],
+  providers: [AppService, AuthService],
 })
 export class AppModule {}

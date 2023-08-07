@@ -5,6 +5,7 @@ services:
     build:
       context: ./front
       dockerfile: ./Dockerfile
+    command: sh -c "npx serve -s build -l 8000"
     env_file:
       - ./front/.env
     volumes:
