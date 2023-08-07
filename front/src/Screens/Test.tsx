@@ -15,7 +15,7 @@ export const Test = () => {
     }
 
     const handleSocket = async () => {
-        // connectSocket('1');
+        connectSocket();
     }
 
     const handleDisconnectSocket = async () => {

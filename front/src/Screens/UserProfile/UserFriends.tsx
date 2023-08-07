@@ -13,10 +13,13 @@ import { FaHeart } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 import { connectSocket, getSocket, disconnectSocket } from "../../Websocket/Socket.io";
 import { JsxEmit } from "typescript";
+import socket from '../../Websocket/Socket.io';
+import { Socket } from "socket.io-client";
 
 const UserFriends = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [userDataMain, setUserDataMain] = useState<UserData | null>(null);
+  const [socket, setSocket] = useState<Socket>();
   const [errMsg, setErrMsg] = useState('');
   const [users, setUsers] = useState<UserArray>([]);
   const [removeFlag, setRemoveFlag] = useState(false);
@@ -61,7 +64,7 @@ const UserFriends = () => {
         updatedUsers.push(userInstance);
         // console.log('2: ', updatedUsers);
       });
-      console.log('3: ', updatedUsers);
+      // console.log('3: ', updatedUsers);
       setUsers(updatedUsers);
     } catch (err: any) {
     }
@@ -69,25 +72,13 @@ const UserFriends = () => {
 
   useEffect(() => {
     fetchFriends();
-  }, []);
-
-  useEffect(() => {
-    const userString = localStorage.getItem('userData');
-    if (userString) {
-      const userJSON = JSON.parse(userString);
-      if (userJSON && userJSON.id) {
-        connectSocket(userJSON.id, setFriendOnlineStatus);
-      }
-    }
+    setSocket(connectSocket());
+    getSocket()
     return () => {
+      socket?.off("connect", () => {})
       disconnectSocket();
-    };
-
-  }, [userData, fetchFriends]);
-
-
-
-
+    }
+  }, []);
 
   useEffect(() => {
     const removeUser = async (id: string | undefined) => {
@@ -109,13 +100,7 @@ const UserFriends = () => {
       fetchFriends();
       setIdToRemove('none');
     };
-
-
-
-
     if (removeFlag) {
-      // Call the removeUser function with the appropriate ID here
-      // For example, if you have a user ID in state, you can use it like this:
       removeUser(idToRemove);
     }
   }, [removeFlag, idToRemove]);
@@ -127,20 +112,7 @@ const UserFriends = () => {
       setIdToRemove(id);
       setNotifMsg('Click here to cancel friend\'s removal');
     }
-    // perform only if the user didn't click on the notification message
-    // try {
-    //   const response = await axios.patch(
-    //     API_ROUTES.ADD_FRIEND + id,
-    //     dataToSend,
-    //     {
-    //       withCredentials: true
-    //     });
-    // } catch (err: any) {
-    // adequate error management
   }
-
-  // fetchFriends();
-
 
   return (
     <div className="vh-100 d-flex" style={{ paddingTop: '75px', margin: '0px', }}>

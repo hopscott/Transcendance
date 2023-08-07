@@ -77,35 +77,22 @@ const GenericUserProfile = () => {
     <div className="vh-100 d-flex " style={{ paddingTop: '75px' }}>
       <MDBContainer className="profile-board-container">
         <MDBCard className="profile-board-card">
-
-
-
           <div className="profile-board-header-show-profile">
-
             <button onClick={() => addFriend(id)}>
               <IconContext.Provider
                 value={{ color: iconColor, size: '30px' }}>
                 <FaHeart />
               </IconContext.Provider>
             </button>
-
             <LogoutParent setErrMsg={setErrMsg} />
           </div>
-
           <ProfilePicContainer userData={userData} />
-
           <div className="fade-line" style={{ marginTop: '20px' }}></div>
-
           <DisplayData userData={userData} />
-
           <div className="fade-line" style={{ marginTop: '-10px' }}></div>
-
           <DisplayStats userData={userData} />
         </MDBCard>
       </MDBContainer>
-
-
-
 
       {/* reactivate error message */}
       <ToastErrorMessage errMsg={errMsg} resetErrMsg={resetErrMsg} />

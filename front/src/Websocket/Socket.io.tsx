@@ -1,42 +1,42 @@
 import { io, Socket } from 'socket.io-client';
 import { APP_URL, SOCKET_GENERAL } from '../Utils';
 
-// const socketUrl = '/api/general';
-// const socketUrl = 'http://localhost:8000/';
-const socketUrl = APP_URL + SOCKET_GENERAL;
+const socketUrl = APP_URL;
+// const socketUrl = APP_URL + SOCKET_GENERAL;
+// const socketUrl = '/socket';
 
 let socket: Socket | null = null;
 
-export const connectSocket = (userId: string | null, setFriendOnlineStatus: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>) => {
+export const connectSocket = () => {
 
   console.log("inside socket and sock value:", socket);
-  if (!userId)
-    return;
   if (!socket) {
-    console.log('Connecting socket for user:', userId);
+    // console.log('Connecting socket for user:', userId);
     socket = io(socketUrl, {
-      query: { userId },
-      reconnection: true,
-      reconnectionAttempts: 5,
+      // reconnection: true,
+      // reconnectionAttempts: 5,
     });
 
-    socket.on("connect", () => {
-      if (socket)
-        console.log(socket.id);
-    });
+    // socket.on("connect", () => {
+    //   if (socket) {
+    //     console.log(socket.id);
+    //     // socket.off("connect");
+    //   }
+    // });
     // Listen on test
-    socket.on('user_status_update', (data) => {
-      console.log("Status update:", data);
-    })
+    // socket.on('user_status_update', (data) => {
+    //   console.log("Status update:", data);
+    // })
 
-    socket.on('userStatus', ({ userId, status }: { userId: string; status: boolean }) => {
-      setFriendOnlineStatus((prevStatus) => ({ ...prevStatus, [userId]: status }));
-    });
+    // socket.on('userStatus', ({ userId, status }: { userId: string; status: boolean }) => {
+    //   setFriendOnlineStatus((prevStatus) => ({ ...prevStatus, [userId]: status }));
+    // });
     return socket;
   }
 };
 
 export const sendMessage = (message: string) => {
+  console.log("SEND MESSAGE");
   if (socket) {
     socket.emit('message', message);
   }
