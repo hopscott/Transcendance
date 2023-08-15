@@ -8,7 +8,7 @@ import { Player } from './models/player.model';
 const MIN_REFLECTION_ANGLE = Math.PI / 3;
 
 // Define GameProperties class and interfaces as needed
-class GameProperties {
+export class gameStruct {
 	// Define game properties and calculations here
 	private GameBoard: GameBoard;
 	private Ball: Ball;
