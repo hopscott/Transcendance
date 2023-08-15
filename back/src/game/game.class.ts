@@ -3,6 +3,7 @@ import { Ball } from './models/ball.model';
 import { Paddle } from './models/paddle.model';
 import { Vector } from './models/vector.model';
 import { Point } from './models/point.model';
+import { Player } from './models/player.model';
 
 const MIN_REFLECTION_ANGLE = Math.PI / 3;
 
@@ -15,8 +16,23 @@ class GameProperties {
   private Paddle2: Paddle;
   private Player1Score: number;
   private Player2Score: number;
+  public tCreate = Date.now();
+  public tStart = Date.now();;
+  public id: number;
+  public status = 'pending';
+  public room: string;
+  public player1: Player;
+  public player2: Player;
 
-	constructor() {
+	constructor(    
+    id: number,
+    player1Id: number,
+    player2Id: number,
+    room: string) {
+    this.id = id;
+    this.room = room;
+    this.player1 = new Player(player1Id);
+    this.player2 = new Player(player2Id);
 		this.GameBoard = new GameBoard();
 		this.Ball = new Ball();
 		this.Paddle1 = new Paddle(true);
