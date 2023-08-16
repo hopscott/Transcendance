@@ -12,6 +12,8 @@ import { extractAccessTokenFromCookie } from 'src/utils';
 import { AuthService } from '../auth/auth.service';
 import { GameDto } from './dto/game.dto';
 import { UserService } from 'src/user/user.service';
+import { GameStruct } from './game.class';
+import { Player } from './models/player.model';
 
 @WebSocketGateway({ namespace: 'game' })
 export class GameEvents {
@@ -30,7 +32,7 @@ export class GameEvents {
   }
 
   async handleConnection(client: Socket) {
-    console.log('> game Connection in');
+    console.log('IN client data:', client.data);
     const access_token = extractAccessTokenFromCookie(client);
     if (!access_token) {
       client.disconnect();
@@ -41,19 +43,38 @@ export class GameEvents {
       client.disconnect();
       return;
     }
-    client.data = { id: user.id, gameId: '' };
+    client.data = {
+      id: user.id,
+      username: user.username,
+      gameId: undefined,
+      room: undefined,
+    };
+    if (this.pongService.onlineGames) {
+      this.pongService.onlineGames.forEach((value, key) => {
+        console.log('uid:', user.id, ' pl1id:', value.player1.id, ' pl2id:', value.player2.id)
+        if (user.id === value.player1.id || user.id === value.player2.id) {
+          console.log('OKKKKKKKKK value room:', value.room);
+          client.data.gameId = value.id;
+          client.data.room = value.room;
+          client.join(value.room);
+          console.log('on connection joined room:', `${value.room}`);
+        }
+      });
+    }
     client.join(`user_${user.id}`);
     client.join('game_online');
     this.idToSocketMap.set(user.id, client);
-    // console.log('socket:', client);
+    console.log('OUT client data:', client.data);
+    // console.log('id to socket map:', this.idToSocketMap);
 
   }
 
   async handleDisconnect(client: Socket) {
-    console.log('> game Connection out');
+    // console.log('> game Connection out');
     const user = await this.userService.findOneById(client.data.id);
     if (!user) return;
     this.pongService.removeFromQueue(user.id);
+    this.idToSocketMap.delete(user.id);
     const socketId = client.handshake.query.userId;
     // console.log("users:", this.connectedUsers);
   }
@@ -76,6 +97,19 @@ export class GameEvents {
         this.server.to(`user_${gameStructure.player2.id}`).emit(`joinGameQueue`, gameStructure);
         player1socket.join(`game_${gameStructure.game.id}`);
         player2socket.join(`game_${gameStructure.game.id}`);
+        player1socket.data.room = `game_${gameStructure.game.id}`;
+        player2socket.data.room = `game_${gameStructure.game.id}`;
+
+        // console.log(`game_${gameStructure.game.id}`);
+        // const room = this.server.sockets.adapter.rooms.get(`game_${gameStructure.game.id}`);
+
+        // if (room) {
+        //   const socketIds = Array.from(room); // Convert the Set of socket IDs to an array
+        //   console.log('Sockets in room:', socketIds);
+        // } else {
+        //   console.log('Room not found');
+        // }
+        // console.log('creeation roooooooom:', room);
 
         // Check if gameId is empty?
         player1socket.data.gameId = gameStructure.game.id;
@@ -100,32 +134,99 @@ export class GameEvents {
 
   }
 
-  @SubscribeMessage('playerReady')
+  @SubscribeMessage('test')
+  async handleTest(
+    @ConnectedSocket() client: Socket) {
+
+    console.log('test recevded');
+    this.server.emit('test', 'Lol');
+  }
+
+  @SubscribeMessage('prepareToPlay')
   async handlePlayerReady(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { player: string }) {
+    @MessageBody() data: { player: string, action: string }) {
 
-    const playerId = client.data.id;
-    if (!playerId) return;
-    console.log('client.data.gameId:', client.data.gameId);
-    const gameId = client.data.gameId;
-    const gameStruct = this.pongService.getGameStructById(gameId);
-    console.log('GameStruct:', gameStruct);
-    gameStruct.setPlayerReady(playerId);
-
-    
-    if (gameStruct.bothPlayersReady()) {
-      gameStruct.tStart = Date.now()
-      this.server.to(gameStruct.room).emit('game', 'PLAY');
+    if (!client.data.id) return; // check user via token too?
+    const access_token = extractAccessTokenFromCookie(client);
+    if (!access_token) {
+      client.disconnect();
+      return;
     }
-    // // Check if both players are ready
-    // if (this.playersReady['player1'] && this.playersReady['player2']) {
-    //   // Reset readiness for the next round
-    //   this.playersReady['player1'] = false;
-    //   this.playersReady['player2'] = false;
+    const user = await this.authService.validateJwtToken(access_token);
+    if (!user) {
+      client.disconnect();
+      return;
+    }
+    const gameId = client.data.gameId;
+    if (!gameId) return;
+    const gameStruct = this.pongService.getGameStructById(gameId);
 
-    //   // Notify both players to start the countdown
-    //   this.server.to('game_ID').emit('startCountdown');
+
+
+    // console.log('- data:', data);
+    if (data.action === 'status') {
+      this.server.to(`user_${user.id}`).emit('prepareToPlay',
+        { gameStatus: gameStruct.status });
+      return;
+    }
+
+    let player: Player;
+    let opponent: Player;
+    const playerNum = await this.pongService.getPlayerById(gameStruct.id, user.id);
+    if (playerNum === 1) {
+      player = gameStruct.player1;
+      opponent = gameStruct.player2;
+    } else if (playerNum === 2) {
+      player = gameStruct.player1;
+      opponent = gameStruct.player2;
+    } else
+      return;
+
+    if (data.action === 'playPressed' && opponent.status === 'pending') {
+      gameStruct.setPlayerReady(user.id);
+      this.server.to(`user_${user.id}`).emit('prepareToPlay',
+        { gameStatus: 'waiting' });
+    } else if (data.action === 'playPressed' && opponent.status === 'ready') {
+      console.log('GO PLAYYYYYYYYY');
+    }
+
+    // const sockets = await this.server.in(`game_${gameStruct.id}`).fetchSockets();
+
+    //         // console.log(`game_${gameStruct.id}`);
+    //         // const room = this.server.sockets.adapter.rooms.get(`game_${gameStruct.id}`);
+    //         // console.log('roooooooom sockets:', sockets);
+
+    // sockets.forEach((Socket) => {
+    //   console.log('IN room user:', Socket.data);
+    // });
+
+
+
+
+
+
+
+
+
+
+    //         // console.log('GameStruct:', gameStruct);
+    // gameStruct.setPlayerReady(playerId);
+
+    // this.server.to(gameStruct.room).emit('game', 'Lol');
+    // console.log('both players r:', gameStruct.bothPlayersReady());
+    // if (gameStruct.bothPlayersReady()) {
+    //   gameStruct.tStart = Date.now()
+    //   this.server.to(gameStruct.room).emit('game', 'PLAY');
+    // }
+    //         // // Check if both players are ready
+    //         // if (this.playersReady['player1'] && this.playersReady['player2']) {
+    //         //   // Reset readiness for the next round
+    //         //   this.playersReady['player1'] = false;
+    //         //   this.playersReady['player2'] = false;
+
+    //         //   // Notify both players to start the countdown
+    //         //   this.server.to('game_ID').emit('startCountdown');
 
 
   }
