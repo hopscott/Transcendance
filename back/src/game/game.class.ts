@@ -8,7 +8,7 @@ import { Player } from './models/player.model';
 const MIN_REFLECTION_ANGLE = Math.PI / 3;
 
 // Define GameProperties class and interfaces as needed
-export class gameStruct {
+export class GameStruct {
 	// Define game properties and calculations here
 	private GameBoard: GameBoard;
 	private Ball: Ball;
@@ -40,6 +40,20 @@ export class gameStruct {
     this.Player1Score = 0;
     this.Player2Score = 0;
 	}
+
+  setPlayerReady(id: number) {
+    if (id === this.player1.id)
+      this.player1.status = 'ready';
+    else if (id === this.player2.id)
+      this.player2.status = 'ready';
+  }
+
+  bothPlayersReady() {
+    if (this.player1.status === 'ready'
+      && this.player2.status === 'ready')
+      return true;
+    return false;
+  }
 
   resetBall(n: boolean): void {
     this.Ball.setAccelarationFactor(1);

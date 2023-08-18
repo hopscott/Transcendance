@@ -76,10 +76,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
     if (whichPlayer === 'player1' && !isPlayer1Ready) {
       setIsPlayer1Ready(true);
       if (socket.game)
-        socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'playPressed' });
+        socket.game.emit('prepareToPlay', { player: whichPlayer, action: 'playPressed' });
     } else if (whichPlayer === 'player2' && !isPlayer2Ready) {
       if (socket.game)
-        socket.game?.emit('prepareToPlay', { player: whichPlayer, action: 'playPressed' });
+        socket.game.emit('prepareToPlay', { player: whichPlayer, action: 'playPressed' });
       setIsPlayer2Ready(true);
     }
   };
@@ -268,7 +268,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ whichPlayer }) => {
           <div className="timer">{timer}</div>
         )}
         {!isGameStarted &&
-          <button onClick={handleReadyClick}>
+          <button onClick={handleReadyClick}>Ready
 
             {/* {whichPlayer === 'player1' ?
               (isPlayer1Ready ? "Waiting for Player 2" : "Ready?") :
