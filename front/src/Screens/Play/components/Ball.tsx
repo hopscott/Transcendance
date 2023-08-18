@@ -1,22 +1,41 @@
-export class Point {
-  constructor(
-    public x: number,
-    public y: number) { }
+import React, { useEffect, useRef } from 'react';
+import { BallNew, GameBoardNew } from '../../../game/models'; // Import your GameBoardNew logic
+
+interface BallCanvasProps {
+  board: GameBoardNew;
+  ball: BallNew;
+  canvasRef: React.RefObject<HTMLCanvasElement>;
 }
 
-export class Vector {
-  constructor(
-    public x: number,
-    public y: number) { }
-}
+const BallCanvas: React.FC<BallCanvasProps> = ({ board, ball, canvasRef }) => {
 
-export class Ball {
-  constructor(
-    public center: Point,
-    public dir: Vector,
-    public size: number) {
-    this.tip = new Point(center.x - size / 2, center.y - size / 2);
-  }
-  public tip: Point;
+  useEffect(() => {
+    if (!canvasRef.current) return;
 
-}
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+
+    const handleResize = () => {
+      ball.updateBall(board.factor);
+
+      if (ctx) {
+        // Draw the ball
+        ctx.fillStyle = 'white';
+        ctx.fillRect(ball.tip.x, ball.tip.y, ball.size, ball.size);
+        ctx.setLineDash([]);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [canvasRef, ball, board.factor]);
+
+  return null;
+};
+
+export default BallCanvas;

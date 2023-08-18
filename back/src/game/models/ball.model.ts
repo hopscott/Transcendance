@@ -1,5 +1,6 @@
 import { Vector } from './vector.model';
 import { Point } from './point.model';
+import { GameBoard } from './gameboard.model';
 
 export class Ball {
 	// Define ball properties and calculations here
@@ -9,11 +10,14 @@ export class Ball {
 	private AccelarationFactor: number;
 	private dir: Vector;
   
-	constructor() {
+	constructor(gameboard: GameBoard) {
 	  this.Size = 20;
 	  this.Speed = new Vector(2, 2);
-	  this.Pos = new Point(300, 150);
+	  this.Pos = new Point(gameboard.width * 0.5, gameboard.height * 0.5);
 	  this.AccelarationFactor = 1;
+    const randomAngle = Math.random() * (Math.PI / 3) - Math.PI / 6;
+    const randomX = Math.random() < 0.5 ? -1 : 1;
+    const randomY = Math.random() < 0.5 ? -1 : 1;
 	  this.dir = new Vector(2, 2);
 	}
 

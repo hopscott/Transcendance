@@ -89,7 +89,7 @@ export class GameEvents {
     const gameQueue = this.pongService.addToQueue(user, gameDto);
     if (gameQueue != null) {
       this.server.to(`user_${user.id}`).emit(`joinGameQueue`, { status: 'JOINED' });
-      const gameStructure = await this.pongService.gameStart(gameDto, this.server);
+      const gameStructure = await this.pongService.gameCreate(gameDto, this.server);
       if (gameStructure) {
         const player1socket = this.getSocketById(gameStructure.player1.id);
         const player2socket = this.getSocketById(gameStructure.player2.id);
@@ -99,19 +99,6 @@ export class GameEvents {
         player2socket.join(`game_${gameStructure.game.id}`);
         player1socket.data.room = `game_${gameStructure.game.id}`;
         player2socket.data.room = `game_${gameStructure.game.id}`;
-
-        // console.log(`game_${gameStructure.game.id}`);
-        // const room = this.server.sockets.adapter.rooms.get(`game_${gameStructure.game.id}`);
-
-        // if (room) {
-        //   const socketIds = Array.from(room); // Convert the Set of socket IDs to an array
-        //   console.log('Sockets in room:', socketIds);
-        // } else {
-        //   console.log('Room not found');
-        // }
-        // console.log('creeation roooooooom:', room);
-
-        // Check if gameId is empty?
         player1socket.data.gameId = gameStructure.game.id;
         player2socket.data.gameId = gameStructure.game.id;
       }
@@ -134,43 +121,24 @@ export class GameEvents {
 
   }
 
-  @SubscribeMessage('test')
-  async handleTest(
-    @ConnectedSocket() client: Socket) {
-
-    console.log('test recevded');
-    this.server.emit('test', 'Lol');
-  }
-
   @SubscribeMessage('prepareToPlay')
   async handlePlayerReady(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { player: string, action: string }) {
 
-    if (!client.data.id) return; // check user via token too?
     const access_token = extractAccessTokenFromCookie(client);
-    if (!access_token) {
+    if (!client.data.id || !client.data.gameId || !access_token) {
+      if (!client.data.gameId && client.data.id)
+        this.server.to(`user_${client.data.id}`).emit('prepareToPlay', { gameStatus: 'canceled' });
       client.disconnect();
       return;
     }
     const user = await this.authService.validateJwtToken(access_token);
-    if (!user) {
+    const gameStruct = this.pongService.getGameStructById(client.data.gameId);
+    if (!user || !gameStruct) {
       client.disconnect();
       return;
     }
-    const gameId = client.data.gameId;
-    if (!gameId) return;
-    const gameStruct = this.pongService.getGameStructById(gameId);
-
-
-
-    // console.log('- data:', data);
-    if (data.action === 'status') {
-      this.server.to(`user_${user.id}`).emit('prepareToPlay',
-        { gameStatus: gameStruct.status });
-      return;
-    }
-
     let player: Player;
     let opponent: Player;
     const playerNum = await this.pongService.getPlayerById(gameStruct.id, user.id);
@@ -178,57 +146,77 @@ export class GameEvents {
       player = gameStruct.player1;
       opponent = gameStruct.player2;
     } else if (playerNum === 2) {
-      player = gameStruct.player1;
-      opponent = gameStruct.player2;
+      player = gameStruct.player2;
+      opponent = gameStruct.player1;
     } else
       return;
 
-    if (data.action === 'playPressed' && opponent.status === 'pending') {
-      gameStruct.setPlayerReady(user.id);
+    // Status
+    if (data.action === 'status') {
       this.server.to(`user_${user.id}`).emit('prepareToPlay',
-        { gameStatus: 'waiting' });
-    } else if (data.action === 'playPressed' && opponent.status === 'ready') {
-      console.log('GO PLAYYYYYYYYY');
+        {
+          gameStatus: gameStruct.status,
+          playerStatus: player.status,
+          opponentStatus: opponent.status,
+          countdown: gameStruct.countdown,
+        });
+      return;
     }
+    // Wait for opponent
+    else if (data.action === 'playPressed' && opponent.status === 'pending') {
+      player.status = 'ready';
+      gameStruct.status = 'waiting';
+      this.server.to(`user_${user.id}`).emit('prepareToPlay',
+        {
+          gameStatus: gameStruct.status,
+          playerStatus: player.status,
+          opponentStatus: opponent.status
+        });
+      const timeoutInSeconds = 10;
+      setTimeout(() => {
+        if (opponent.status === 'pending') {
+          gameStruct.status = 'timeout';
+          this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: gameStruct.status });
+          this.pongService.deleteGame(gameStruct.id);
+        }
+      }, timeoutInSeconds * 1000);
+      this.pongService
+    }
+    // Both ready launch game 
+    else if (data.action === 'playPressed' && opponent.status === 'ready') {
+      player.status = 'ready';
+      gameStruct.status = 'countdown';
 
-    // const sockets = await this.server.in(`game_${gameStruct.id}`).fetchSockets();
-
-    //         // console.log(`game_${gameStruct.id}`);
-    //         // const room = this.server.sockets.adapter.rooms.get(`game_${gameStruct.id}`);
-    //         // console.log('roooooooom sockets:', sockets);
-
+      this.server.to(gameStruct.room).emit('prepareToPlay',
+        {
+          gameStatus: gameStruct.status,
+          playerStatus: player.status,
+          opponentStatus: opponent.status
+        });
+      // Countdown activity
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      gameStruct.countdown = 3;
+      this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.countdown });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      gameStruct.countdown = 2;
+      this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.countdown });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      gameStruct.countdown = 1;
+      this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: gameStruct.countdown });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      gameStruct.countdown = 0;
+      this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: 'countdown', countdown: 'GO!' });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      gameStruct.status = 'playing';
+      gameStruct.player1.status = 'playing';
+      gameStruct.player2.status = 'playing';
+      gameStruct.tStart = Date.now();
+      this.server.to(gameStruct.room).emit('prepareToPlay', { gameStatus: 'playing', gameState: gameStruct.getState(), time: Date.now() });
+    }
+    // const sockets = await this.server.in(gameStruct.room).fetchSockets();
     // sockets.forEach((Socket) => {
     //   console.log('IN room user:', Socket.data);
     // });
-
-
-
-
-
-
-
-
-
-
-    //         // console.log('GameStruct:', gameStruct);
-    // gameStruct.setPlayerReady(playerId);
-
-    // this.server.to(gameStruct.room).emit('game', 'Lol');
-    // console.log('both players r:', gameStruct.bothPlayersReady());
-    // if (gameStruct.bothPlayersReady()) {
-    //   gameStruct.tStart = Date.now()
-    //   this.server.to(gameStruct.room).emit('game', 'PLAY');
-    // }
-    //         // // Check if both players are ready
-    //         // if (this.playersReady['player1'] && this.playersReady['player2']) {
-    //         //   // Reset readiness for the next round
-    //         //   this.playersReady['player1'] = false;
-    //         //   this.playersReady['player2'] = false;
-
-    //         //   // Notify both players to start the countdown
-    //         //   this.server.to('game_ID').emit('startCountdown');
-
-
   }
 
 }

@@ -7,6 +7,12 @@ import { Player } from './models/player.model';
 
 const MIN_REFLECTION_ANGLE = Math.PI / 3;
 
+export interface GameState {
+  player1: Player;
+  player2: Player;
+  ball: Ball;
+}
+
 // Define GameProperties class and interfaces as needed
 export class GameStruct {
 	// Define game properties and calculations here
@@ -17,14 +23,18 @@ export class GameStruct {
   private Player1Score: number;
   private Player2Score: number;
   public tCreate = Date.now();
-  public tStart = Date.now();;
+  public tStart = Date.now();
   public id: number;
   public status = 'pending';
   public room: string;
   public player1: Player;
   public player2: Player;
+  public countdown = -1;
+  public gameBoard: GameBoard;
+  public ball: Ball;
+  public paddle: Paddle;
 
-	constructor(    
+  constructor(
     id: number,
     player1Id: number,
     player2Id: number,
@@ -34,7 +44,7 @@ export class GameStruct {
     this.player1 = new Player(player1Id);
     this.player2 = new Player(player2Id);
 		this.GameBoard = new GameBoard();
-		this.Ball = new Ball();
+		this.Ball = new Ball(this.GameBoard);
 		this.Paddle1 = new Paddle(true);
     this.Paddle2 = new Paddle(false);
     this.Player1Score = 0;
@@ -130,4 +140,14 @@ export class GameStruct {
       this.Ball.setPos(new Point(newPosx, newPosy));
     }
   }
+
+  getState(): GameState {
+    const state: GameState = {
+      player1: this.player1,
+      player2: this.player2,
+      ball: this.ball,
+    };
+    return state;
+  }  
+
 };
