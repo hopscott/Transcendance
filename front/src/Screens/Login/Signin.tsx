@@ -150,7 +150,8 @@ export const Signin = () => {
 
             </div>
 
-            <div className="border">
+            <div>
+            {/* <div className="border"> */}
               <p className="flex justify-center items-center text-white">
                 No account yet?&nbsp;
                 <Link to={APP_ROUTES.SIGN_UP} className="text-white">
