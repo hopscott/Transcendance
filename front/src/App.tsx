@@ -14,7 +14,7 @@ import './Screens/JoinGame/css/loading.css'
 import './Screens/Play/css/play.scss'
 import './css/2faButton.scss'
 import './game/components/GameStyles.css'
-import { Home } from './Screens/Home/Home';
+import Home from './Screens/Home/Home';
 import { Signin } from './Screens/Login/Signin';
 import { Signup } from './Screens/Login/Signup';
 import { Route, Routes, useLocation } from 'react-router-dom';

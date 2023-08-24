@@ -256,9 +256,6 @@ function Particle() {
         />
     )
 
-
 }
-
-
 
 export default React.memo(Particle);

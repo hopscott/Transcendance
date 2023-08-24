@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import ParticlesBackgroundNew from "./Components/ParticlesSlow.memo";
+import ParticlesBackgroundNew from "./Components/ParticlesSlow";
 import { useLocation} from 'react-router-dom';
 import GlobalNavDropdown from "./Components/GlobalNavDropdown";
 
